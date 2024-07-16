@@ -11,8 +11,10 @@ const int nTPB = 256;  //定义每个线程块的线程数为256。
 __device__ int reduce(thread_group g, int *x, int val) { //
   int lane = g.thread_rank();        //g.thread_rank()调用返回当前线程在其所属线程组中的索引。
   for (int i = g.size()/2; i > 0; i /= 2) {
-    x[lane] = val;       g.sync();    //sync方法确保线程组内所有线程到达这一点后才继续执行。
-    if (lane < i) val += x[lane + i];  g.sync();
+    x[lane] = val;       
+    g.sync();    //sync方法确保线程组内所有线程到达这一点后才继续执行。
+    if (lane < i) val += x[lane + i];  
+    g.sync();
   }
   if (g.thread_rank() == 0) printf("group partial sum: %d\n", val);
   return val;
