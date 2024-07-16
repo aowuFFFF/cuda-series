@@ -6,6 +6,8 @@ const int nTPB = 256;  //定义每个线程块的线程数为256。
 
 //这个函数实现了一个简单的归约操作，将线程组内的数据归约为一个单一的值。
 //thread_group:是CUDA中的一个类，代表一组线程，可以用来进行线程之间的同步和数据共享。
+//x：传入一个指向共享内存的指针
+//val：针对每个线程组内的线程进行规约
 __device__ int reduce(thread_group g, int *x, int val) { //
   int lane = g.thread_rank();        //g.thread_rank()调用返回当前线程在其所属线程组中的索引。
   for (int i = g.size()/2; i > 0; i /= 2) {
